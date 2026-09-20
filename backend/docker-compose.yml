@@ -1,0 +1,60 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: spendwise_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgresql1}
+      POSTGRES_DB: ${POSTGRES_DB:-spendwise_db}
+    ports:
+      - "5433:5432"
+    volumes:
+      - spendwise_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-spendwise_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - spendwise_network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spendwise_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_NAME: SpendWise
+      APP_ENV: production
+      DEBUG: "false"
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgresql1}@db:5432/${POSTGRES_DB:-spendwise_db}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-change-this-in-production}
+      JWT_ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: "60"
+      CORS_ORIGINS: "http://localhost:3000,http://localhost:8080"
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "
+        echo 'Running database migrations...' &&
+        alembic upgrade head &&
+        echo 'Seeding default categories...' &&
+        python -m app.db.seed &&
+        echo 'Starting server...' &&
+        uvicorn app.main:app --host 0.0.0.0 --port 8000
+      "
+    networks:
+      - spendwise_network
+
+volumes:
+  spendwise_pgdata:
+    driver: local
+
+networks:
+  spendwise_network:
+    driver: bridge
