@@ -1,0 +1,20 @@
+class AppSpacing {
+  AppSpacing._();
+
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double md = 12.0;
+  static const double lg = 16.0;
+  static const double xl = 24.0;
+  static const double xxl = 32.0;
+  static const double xxxl = 48.0;
+}
+
+class AppRadius {
+  AppRadius._();
+
+  static const double sm = 8.0;   // small elements
+  static const double md = 12.0;  // inputs, buttons
+  static const double lg = 16.0;  // cards
+  static const double xl = 20.0;  // hero cards
+}
