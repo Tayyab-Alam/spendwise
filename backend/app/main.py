@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
 from app.core.config import settings
@@ -11,6 +12,20 @@ app = FastAPI(
     description="Personal Finance & Expense Management API",
     version="1.0.0",
     debug=settings.DEBUG,
+)
+
+
+# ============================================================
+# CORS MIDDLEWARE
+# ============================================================
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins_list,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 
