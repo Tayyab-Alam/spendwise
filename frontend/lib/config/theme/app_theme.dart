@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'colors.dart';
 import 'spacing.dart';
 import 'typography.dart';
@@ -28,6 +30,7 @@ class AppTheme {
         centerTitle: false,
         titleTextStyle: AppTypography.h3.copyWith(color: AppColors.darkText),
         iconTheme: const IconThemeData(color: AppColors.darkText),
+        systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
       cardTheme: CardThemeData(
         color: AppColors.darkSurface,
@@ -60,7 +63,8 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppRadius.md),
           borderSide: const BorderSide(color: AppColors.expense, width: 1.0),
         ),
-        hintStyle: AppTypography.body.copyWith(color: AppColors.darkTextSecondary),
+        hintStyle:
+            AppTypography.body.copyWith(color: AppColors.darkTextSecondary),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -106,7 +110,7 @@ class AppTheme {
   }
 
   // ============================================================
-  // LIGHT THEME
+  // LIGHT THEME — WARM CREAMY
   // ============================================================
   static ThemeData light() {
     final base = ThemeData.light(useMaterial3: true);
@@ -117,7 +121,7 @@ class AppTheme {
         primary: AppColors.primaryLight,
         surface: AppColors.lightSurface,
         onSurface: AppColors.lightText,
-        error: AppColors.expense,
+        error: AppColors.lightExpense,
         outline: AppColors.lightBorder,
       ),
       appBarTheme: AppBarTheme(
@@ -127,15 +131,16 @@ class AppTheme {
         centerTitle: false,
         titleTextStyle: AppTypography.h3.copyWith(color: AppColors.lightText),
         iconTheme: const IconThemeData(color: AppColors.lightText),
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
       cardTheme: CardThemeData(
         color: AppColors.lightSurface,
-        elevation: 1,
-        shadowColor: Colors.black.withValues(alpha: 0.04),
+        elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.lg),
           side: const BorderSide(color: AppColors.lightBorder, width: 0.5),
         ),
+        shadowColor: Colors.black.withValues(alpha: 0.04),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -158,9 +163,10 @@ class AppTheme {
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: const BorderSide(color: AppColors.expense, width: 1.0),
+          borderSide: const BorderSide(color: AppColors.lightExpense, width: 1.0),
         ),
-        hintStyle: AppTypography.body.copyWith(color: AppColors.lightTextSecondary),
+        hintStyle:
+            AppTypography.body.copyWith(color: AppColors.lightTextSecondary),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -191,7 +197,8 @@ class AppTheme {
         titleLarge: AppTypography.h3.copyWith(color: AppColors.lightText),
         bodyLarge: AppTypography.bodyLarge.copyWith(color: AppColors.lightText),
         bodyMedium: AppTypography.body.copyWith(color: AppColors.lightText),
-        bodySmall: AppTypography.caption.copyWith(color: AppColors.lightTextSecondary),
+        bodySmall:
+            AppTypography.caption.copyWith(color: AppColors.lightTextSecondary),
       ),
       extensions: const [
         SpendWiseColors(
