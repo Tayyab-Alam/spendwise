@@ -7,9 +7,11 @@ import '../core/errors/app_exception.dart';
 import 'storage_service.dart';
 
 class ApiClient {
+  static Future<void> Function()? onUnauthorizedGlobal;
+
   final Dio _dio;
   final StorageService _storageService;
-  VoidCallback? onUnauthorized;
+  Future<void> Function()? onUnauthorized;
 
   ApiClient({
     Dio? dio,
@@ -50,7 +52,7 @@ class ApiClient {
           if (err.response?.statusCode == 401) {
             // Clear token on 401 Unauthorized
             await _storageService.deleteToken();
-            onUnauthorized?.call();
+            await (onUnauthorized ?? onUnauthorizedGlobal)?.call();
           }
           return handler.next(err);
         },

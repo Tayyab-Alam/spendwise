@@ -37,6 +37,7 @@ class SpendWiseApp extends StatelessWidget {
     return MaterialApp(
       title: 'SpendWise',
       debugShowCheckedModeBanner: false,
+      navigatorKey: AppRouter.navigatorKey,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: themeProvider.themeMode,

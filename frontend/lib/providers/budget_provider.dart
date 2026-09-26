@@ -39,7 +39,7 @@ class BudgetProvider extends ChangeNotifier {
       final list = await _budgetService.getBudgets(month: _currentMonth);
       _budgets = list;
 
-      // Automatically load status for each budget in parallel
+      // Load status for each budget in parallel (silently)
       await Future.wait(
         list.map((b) => _fetchStatusSilently(b.id)),
       );
@@ -59,7 +59,7 @@ class BudgetProvider extends ChangeNotifier {
     }
   }
 
-  /// Load budget status calculation for a single budget ID.
+  /// Load budget status for a single budget ID.
   Future<BudgetStatus> loadBudgetStatus(int id) async {
     try {
       final status = await _budgetService.getBudgetStatus(id);

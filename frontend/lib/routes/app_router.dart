@@ -3,10 +3,21 @@ import 'package:flutter/material.dart';
 import '../config/theme/typography.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/register_screen.dart';
+import '../screens/budgets/add_budget_screen.dart';
+import '../screens/budgets/budgets_screen.dart';
+import '../screens/categories/categories_screen.dart';
+import '../screens/insights/insights_screen.dart';
+import '../screens/profile/profile_screen.dart';
+import '../screens/shell/main_shell.dart';
 import '../screens/splash/splash_screen.dart';
+import '../screens/transactions/add_transaction_screen.dart';
+import '../screens/transactions/transaction_detail_screen.dart';
+import '../screens/transactions/transactions_screen.dart';
 
 class AppRouter {
   AppRouter._();
+
+  static final navigatorKey = GlobalKey<NavigatorState>();
 
   static const String splash = '/splash';
   static const String login = '/login';
@@ -30,10 +41,8 @@ class AppRouter {
       if (idParam != 'add' && int.tryParse(idParam) != null) {
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => _PlaceholderScreen(
-            title: 'Transaction Details',
-            subtitle: 'Transaction #$idParam (Phase 1 Placeholder)',
-          ),
+          builder: (_) =>
+              TransactionDetailScreen(transactionId: int.parse(idParam)),
         );
       }
     }
@@ -60,73 +69,49 @@ class AppRouter {
       case home:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => const _PlaceholderScreen(
-            title: 'Home Dashboard',
-            subtitle: 'Overview Screen (Phase 2)',
-          ),
+          builder: (_) => const MainShell(),
         );
 
       case transactions:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => const _PlaceholderScreen(
-            title: 'Transactions',
-            subtitle: 'Transaction List & Filter Screen (Phase 3)',
-          ),
+          builder: (_) => const TransactionsScreen(),
         );
 
       case addTransaction:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => const _PlaceholderScreen(
-            title: 'Add Transaction',
-            subtitle: 'Create / Edit Transaction Form (Phase 3)',
-          ),
+          builder: (_) => const AddTransactionScreen(),
         );
 
       case categories:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => const _PlaceholderScreen(
-            title: 'Categories',
-            subtitle: 'Category Management Screen (Phase 3)',
-          ),
+          builder: (_) => const CategoriesScreen(),
         );
 
       case budgets:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => const _PlaceholderScreen(
-            title: 'Budgets',
-            subtitle: 'Budget Progress & Limits Screen (Phase 4)',
-          ),
+          builder: (_) => const BudgetsScreen(),
         );
 
       case addBudget:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => const _PlaceholderScreen(
-            title: 'Add Budget',
-            subtitle: 'Create Budget Screen (Phase 4)',
-          ),
+          builder: (_) => AddBudgetScreen(month: _currentMonth()),
         );
 
       case insights:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => const _PlaceholderScreen(
-            title: 'Insights & Analytics',
-            subtitle: 'Trends & Breakdowns Screen (Phase 5)',
-          ),
+          builder: (_) => const InsightsScreen(),
         );
 
       case profile:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => const _PlaceholderScreen(
-            title: 'User Profile',
-            subtitle: 'Settings & Profile Screen (Phase 6)',
-          ),
+          builder: (_) => const ProfileScreen(),
         );
 
       default:
@@ -145,15 +130,20 @@ class AppRouter {
         splash: (_) => const SplashScreen(),
         login: (_) => const LoginScreen(),
         register: (_) => const RegisterScreen(),
-        home: (_) => const _PlaceholderScreen(title: 'Home'),
-        transactions: (_) => const _PlaceholderScreen(title: 'Transactions'),
-        addTransaction: (_) => const _PlaceholderScreen(title: 'Add Transaction'),
-        categories: (_) => const _PlaceholderScreen(title: 'Categories'),
-        budgets: (_) => const _PlaceholderScreen(title: 'Budgets'),
-        addBudget: (_) => const _PlaceholderScreen(title: 'Add Budget'),
-        insights: (_) => const _PlaceholderScreen(title: 'Insights'),
-        profile: (_) => const _PlaceholderScreen(title: 'Profile'),
+        home: (_) => const MainShell(),
+        transactions: (_) => const TransactionsScreen(),
+        addTransaction: (_) => const AddTransactionScreen(),
+        categories: (_) => const CategoriesScreen(),
+        budgets: (_) => const BudgetsScreen(),
+        addBudget: (_) => AddBudgetScreen(month: _currentMonth()),
+        insights: (_) => const InsightsScreen(),
+        profile: (_) => const ProfileScreen(),
       };
+}
+
+String _currentMonth() {
+  final now = DateTime.now();
+  return '${now.year}-${now.month.toString().padLeft(2, '0')}';
 }
 
 class _PlaceholderScreen extends StatelessWidget {
@@ -179,7 +169,8 @@ class _PlaceholderScreen extends StatelessWidget {
           children: [
             Text(
               title,
-              style: AppTypography.h2.copyWith(color: theme.colorScheme.onSurface),
+              style:
+                  AppTypography.h2.copyWith(color: theme.colorScheme.onSurface),
             ),
             if (subtitle != null) ...[
               const SizedBox(height: 8),

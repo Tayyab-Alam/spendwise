@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 
 import '../core/errors/app_exception.dart';
 import '../models/user.dart';
+import '../routes/app_router.dart';
+import '../services/api_client.dart';
 import '../services/auth_service.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -14,12 +16,17 @@ class AuthProvider extends ChangeNotifier {
 
   AuthProvider({AuthService? authService})
       : _authService = authService ?? AuthService() {
-    _authService.apiClient.onUnauthorized = () {
-      _user = null;
-      _isAuthenticated = false;
+    final handleUnauthorized = () async {
+      await logout();
       _error = 'Session expired. Please log in again.';
       notifyListeners();
+      final navigator = AppRouter.navigatorKey.currentState;
+      if (navigator != null) {
+        navigator.pushNamedAndRemoveUntil(AppRouter.login, (_) => false);
+      }
     };
+    _authService.apiClient.onUnauthorized = handleUnauthorized;
+    ApiClient.onUnauthorizedGlobal = handleUnauthorized;
   }
 
   User? get user => _user;

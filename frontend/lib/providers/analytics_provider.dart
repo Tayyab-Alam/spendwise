@@ -7,20 +7,20 @@ import '../services/analytics_service.dart';
 class AnalyticsProvider extends ChangeNotifier {
   final AnalyticsService _analyticsService;
 
+  BalanceSummary? _balance;
   AnalyticsSummary? _summary;
   CategoryBreakdown? _breakdown;
   MonthlyTrend? _trend;
-  BalanceSummary? _balance;
   bool _isLoading = false;
   String? _error;
 
   AnalyticsProvider({AnalyticsService? analyticsService})
       : _analyticsService = analyticsService ?? AnalyticsService();
 
+  BalanceSummary? get balance => _balance;
   AnalyticsSummary? get summary => _summary;
   CategoryBreakdown? get breakdown => _breakdown;
   MonthlyTrend? get trend => _trend;
-  BalanceSummary? get balance => _balance;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
@@ -29,83 +29,17 @@ class AnalyticsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Load monthly summary (income, expense, net balance, transaction count).
-  Future<void> loadSummary(String month) async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
-
-    try {
-      _summary = await _analyticsService.getSummary(month);
-      _isLoading = false;
-      notifyListeners();
-    } on AppException catch (e) {
-      _error = e.message;
-      _isLoading = false;
-      notifyListeners();
-      rethrow;
-    } catch (e) {
-      _error = e.toString();
-      _isLoading = false;
-      notifyListeners();
-      throw ApiException(_error!);
-    }
-  }
-
-  /// Load category-wise spending breakdown for a month.
-  Future<void> loadBreakdown(String month, {String? type}) async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
-
-    try {
-      _breakdown = await _analyticsService.getCategoryBreakdown(month, type: type);
-      _isLoading = false;
-      notifyListeners();
-    } on AppException catch (e) {
-      _error = e.message;
-      _isLoading = false;
-      notifyListeners();
-      rethrow;
-    } catch (e) {
-      _error = e.toString();
-      _isLoading = false;
-      notifyListeners();
-      throw ApiException(_error!);
-    }
-  }
-
-  /// Load 12-month trend for a given year.
-  Future<void> loadTrend(int year) async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
-
-    try {
-      _trend = await _analyticsService.getMonthlyTrend(year);
-      _isLoading = false;
-      notifyListeners();
-    } on AppException catch (e) {
-      _error = e.message;
-      _isLoading = false;
-      notifyListeners();
-      rethrow;
-    } catch (e) {
-      _error = e.toString();
-      _isLoading = false;
-      notifyListeners();
-      throw ApiException(_error!);
-    }
-  }
-
-  /// Load all-time user balance.
+  /// Load balance.
+  /// NOTE: We do NOT clear _balance at the start of the fetch.
+  /// This prevents the UI from flickering to 0 or loading during refetch.
   Future<void> loadBalance() async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      _balance = await _analyticsService.getBalance();
+      final result = await _analyticsService.getBalance();
+      _balance = result;   // ← Only set when we have new data
       _isLoading = false;
       notifyListeners();
     } on AppException catch (e) {
@@ -121,25 +55,66 @@ class AnalyticsProvider extends ChangeNotifier {
     }
   }
 
-  /// Load all analytics data in parallel for a given month and year.
-  Future<void> loadAll(String month, int year) async {
+  /// Load summary for a month.
+  Future<void> loadSummary(String month) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      final results = await Future.wait([
-        _analyticsService.getSummary(month),
-        _analyticsService.getCategoryBreakdown(month),
-        _analyticsService.getMonthlyTrend(year),
-        _analyticsService.getBalance(),
-      ]);
+      final result = await _analyticsService.getSummary(month);
+      _summary = result;
+      _isLoading = false;
+      notifyListeners();
+    } on AppException catch (e) {
+      _error = e.message;
+      _isLoading = false;
+      notifyListeners();
+      rethrow;
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      throw ApiException(_error!);
+    }
+  }
 
-      _summary = results[0] as AnalyticsSummary;
-      _breakdown = results[1] as CategoryBreakdown;
-      _trend = results[2] as MonthlyTrend;
-      _balance = results[3] as BalanceSummary;
+  /// Load category breakdown for a month.
+  Future<void> loadBreakdown(String month, {String type = 'expense'}) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
 
+    try {
+      final result = await _analyticsService.getCategoryBreakdown(
+        month,
+        type: type,
+      );
+      _breakdown = result;
+      _isLoading = false;
+      notifyListeners();
+    } on AppException catch (e) {
+      _error = e.message;
+      _isLoading = false;
+      notifyListeners();
+      rethrow;
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      throw ApiException(_error!);
+    }
+  }
+
+  /// Load monthly trend for a year.
+  Future<void> loadTrend(int year) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final result = await _analyticsService.getMonthlyTrend(year);
+      _trend = result;
       _isLoading = false;
       notifyListeners();
     } on AppException catch (e) {

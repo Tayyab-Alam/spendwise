@@ -59,15 +59,12 @@ class BudgetService {
 
   /// Update the limit amount of an existing budget.
   Future<Budget> updateBudget(int id, double limitAmount) async {
-    final response = await _apiClient.put(
-      ApiConfig.budget(id),
-      data: {
-        'limit_amount': limitAmount,
-      },
-    );
-
-    return Budget.fromJson(response.data as Map<String, dynamic>);
-  }
+  final response = await _apiClient.put(
+    '/budgets/$id',
+    data: {'limit_amount': limitAmount},
+  );
+  return Budget.fromJson(response.data);
+}
 
   /// Delete a budget.
   Future<void> deleteBudget(int id) async {

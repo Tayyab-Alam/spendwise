@@ -130,7 +130,8 @@ class AppTheme {
       ),
       cardTheme: CardThemeData(
         color: AppColors.lightSurface,
-        elevation: 0,
+        elevation: 1,
+        shadowColor: Colors.black.withValues(alpha: 0.04),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.lg),
           side: const BorderSide(color: AppColors.lightBorder, width: 0.5),
@@ -194,9 +195,9 @@ class AppTheme {
       ),
       extensions: const [
         SpendWiseColors(
-          income: AppColors.income,
-          expense: AppColors.expense,
-          warning: AppColors.warning,
+          income: AppColors.lightIncome,
+          expense: AppColors.lightExpense,
+          warning: AppColors.lightWarning,
           elevatedSurface: AppColors.lightElevated,
           textSecondary: AppColors.lightTextSecondary,
         ),

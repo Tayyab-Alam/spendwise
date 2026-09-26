@@ -16,6 +16,9 @@ class AppColors {
   static const Color income = Color(0xFF22C55E);   // restrained green
   static const Color expense = Color(0xFFF04444);  // restrained red
   static const Color warning = Color(0xFFF59E0B);  // amber
+  static const Color lightIncome = Color(0xFF16A34A);
+  static const Color lightExpense = Color(0xFFDC2626);
+  static const Color lightWarning = Color(0xFFD97706);
 
   // ============================================================
   // DARK THEME
@@ -30,12 +33,12 @@ class AppColors {
   // ============================================================
   // LIGHT THEME
   // ============================================================
-  static const Color lightBg = Color(0xFFF6F7F9);
+  static const Color lightBg = Color(0xFFFAF8F3);
   static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightElevated = Color(0xFFFFFFFF);
-  static const Color lightBorder = Color(0xFFE4E7EC);
-  static const Color lightText = Color(0xFF17191D);
-  static const Color lightTextSecondary = Color(0xFF6B7280);
+  static const Color lightElevated = Color(0xFFF5F2EC);
+  static const Color lightBorder = Color(0xFFE8E3D8);
+  static const Color lightText = Color(0xFF1F1D1A);
+  static const Color lightTextSecondary = Color(0xFF6B6860);
 
   // ============================================================
   // GRADIENTS (subtle only)
@@ -47,7 +50,7 @@ class AppColors {
   );
 
   static const LinearGradient balanceCardGradientLight = LinearGradient(
-    colors: [Color(0xFFFFFFFF), Color(0xFFF6F7F9)],
+    colors: [Color(0xFFF5F2EC), Color(0xFFFFFFFF)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
